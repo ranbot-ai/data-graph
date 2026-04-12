@@ -1,25 +1,25 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useStore } from '@/lib/store'
-import ProviderSelector from '@/components/ProviderSelector'
-import type { AIProvider } from '@/lib/types'
+import { useState } from "react";
+import { useStore } from "@/lib/store";
+import ProviderSelector from "@/components/ProviderSelector";
+import type { AIProvider } from "@/lib/types";
 
 export default function SettingsPage() {
-  const settings = useStore((s) => s.settings)
-  const setProvider = useStore((s) => s.setProvider)
-  const setApiKey = useStore((s) => s.setApiKey)
-  const setDefaultGraphCount = useStore((s) => s.setDefaultGraphCount)
+  const settings = useStore((s) => s.settings);
+  const setProvider = useStore((s) => s.setProvider);
+  const setApiKey = useStore((s) => s.setApiKey);
+  const setDefaultGraphCount = useStore((s) => s.setDefaultGraphCount);
 
-  const [saved, setSaved] = useState(false)
-  const [keys, setKeys] = useState({ ...settings.apiKeys })
+  const [saved, setSaved] = useState(false);
+  const [keys, setKeys] = useState({ ...settings.apiKeys });
 
   function handleSave() {
-    ;(['claude', 'openai', 'gemini'] as AIProvider[]).forEach((p) => {
-      setApiKey(p, keys[p])
-    })
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    (["claude", "openai", "gemini"] as AIProvider[]).forEach((p) => {
+      setApiKey(p, keys[p]);
+    });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   }
 
   return (
@@ -40,20 +40,26 @@ export default function SettingsPage() {
           API Keys
         </h2>
         <div className="flex flex-col gap-3">
-          {(['claude', 'openai', 'gemini'] as AIProvider[]).map((provider) => (
+          {(["claude", "openai", "gemini"] as AIProvider[]).map((provider) => (
             <div key={provider} className="flex items-center gap-3">
               <label className="w-20 text-sm text-gray-600 capitalize">
-                {provider === 'openai' ? 'ChatGPT' : provider.charAt(0).toUpperCase() + provider.slice(1)}
+                {provider === "openai"
+                  ? "ChatGPT"
+                  : provider.charAt(0).toUpperCase() + provider.slice(1)}
               </label>
               <input
                 type="password"
                 value={keys[provider]}
-                onChange={(e) => setKeys((k) => ({ ...k, [provider]: e.target.value }))}
+                onChange={(e) =>
+                  setKeys((k) => ({ ...k, [provider]: e.target.value }))
+                }
                 placeholder={`Enter ${provider} API key...`}
                 className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-violet-400"
               />
               {keys[provider] && (
-                <span className="text-xs text-green-600 whitespace-nowrap">Saved</span>
+                <span className="text-xs text-green-600 whitespace-nowrap">
+                  Saved
+                </span>
               )}
             </div>
           ))}
@@ -82,7 +88,8 @@ export default function SettingsPage() {
           </span>
         </div>
         <div className="flex justify-between text-xs text-gray-400 mt-1">
-          <span>1 column</span><span>8 columns</span>
+          <span>1 column</span>
+          <span>8 columns</span>
         </div>
       </section>
 
@@ -97,5 +104,5 @@ export default function SettingsPage() {
         {saved && <span className="text-sm text-green-600">Saved!</span>}
       </div>
     </div>
-  )
+  );
 }
