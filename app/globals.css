@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Light mode (default) ───────────────────────────────────────── */
+:root {
+  /* RGB channels (space-separated) so Tailwind opacity modifiers work */
+  --canvas-rgb: 248 250 252;    /* slate-50  #F8FAFC */
+  --surface-rgb: 255 255 255;   /* white     #FFFFFF */
+  --panel-rgb: 241 245 249;     /* slate-100 #F1F5F9 */
+  --fg-rgb: 15 23 42;           /* slate-900 #0F172A */
+  --muted-rgb: 100 116 139;     /* slate-500 #64748B */
+
+  /* Hex refs used for inline styles (e.g. recharts) */
+  --surface-hex: #ffffff;
+  --fg-hex: #0f172a;
+  --muted-hex: #64748b;
+  --border-hex: #e2e8f0;
+
+  --background: rgb(var(--canvas-rgb));
+  --foreground: rgb(var(--fg-rgb));
+}
+
+/* ── Dark mode ──────────────────────────────────────────────────── */
+.dark {
+  --canvas-rgb: 11 15 26;       /* #0B0F1A */
+  --surface-rgb: 15 22 41;      /* #0F1629 */
+  --panel-rgb: 13 21 38;        /* #0D1526 */
+  --fg-rgb: 241 245 249;        /* slate-100 #F1F5F9 */
+  --muted-rgb: 148 163 184;     /* slate-400 #94A3B8 */
+
+  --surface-hex: #0f1629;
+  --fg-hex: #f1f5f9;
+  --muted-hex: #94a3b8;
+  --border-hex: rgba(255,255,255,0.08);
+
+  --background: rgb(var(--canvas-rgb));
+  --foreground: rgb(var(--fg-rgb));
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(127,127,127,0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(127,127,127,0.35); }
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
