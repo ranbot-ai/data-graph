@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useStore } from "@/lib/store";
 import ProviderSelector from "@/components/ProviderSelector";
 import type { AIProvider } from "@/lib/types";
+import { useTranslations } from "@/lib/i18n";
 
 export default function SettingsPage() {
   const settings = useStore((s) => s.settings);
   const setProvider = useStore((s) => s.setProvider);
   const setApiKey = useStore((s) => s.setApiKey);
   const setDefaultGraphCount = useStore((s) => s.setDefaultGraphCount);
+  const t = useTranslations();
 
   const [saved, setSaved] = useState(false);
   const [keys, setKeys] = useState({ ...settings.apiKeys });
@@ -29,7 +31,7 @@ export default function SettingsPage() {
       {/* AI Provider */}
       <section className="mb-8">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">
-          AI Provider
+          {t("chat.providerLabel")}
         </h2>
         <ProviderSelector selected={settings.provider} onChange={setProvider} />
       </section>
@@ -37,7 +39,7 @@ export default function SettingsPage() {
       {/* API Keys */}
       <section className="mb-8">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">
-          API Keys
+          {t("chat.apiKeyLabel")}
         </h2>
         <div className="flex flex-col gap-3">
           {(["claude", "openai", "gemini"] as AIProvider[]).map((provider) => (
@@ -99,9 +101,11 @@ export default function SettingsPage() {
           onClick={handleSave}
           className="px-6 py-2 bg-violet-600 text-white rounded-lg text-sm font-semibold hover:bg-violet-700"
         >
-          Save Settings
+          {t("chat.save")}
         </button>
-        {saved && <span className="text-sm text-green-600">Saved!</span>}
+        {saved && (
+          <span className="text-sm text-green-600">{t("chat.saved")}</span>
+        )}
       </div>
     </div>
   );

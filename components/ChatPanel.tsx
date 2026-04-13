@@ -139,7 +139,7 @@ export default function ChatPanel({ messages, onSend, isLoading }: Props) {
               value={localKey}
               onChange={(e) => setLocalKey(e.target.value)}
               placeholder={`${settings.provider} API key...`}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs font-mono text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500"
+              className="w-full bg-white/5 border border-white/10 light:border-black/10 rounded-lg px-3 py-2 text-xs font-mono text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-violet-500 focus:border-violet-500"
             />
           </div>
 
