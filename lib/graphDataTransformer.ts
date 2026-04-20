@@ -1,5 +1,12 @@
 import type { GraphConfig, GraphFilter } from './types'
 
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}T[\d:.Z+-]+$/
+
+function normalizeGroupKey(val: unknown): string | number {
+  if (typeof val === 'string' && ISO_DATE_RE.test(val)) return val.slice(0, 10)
+  return val as string | number
+}
+
 export interface ChartDataPoint {
   name: string | number
   value: number
@@ -42,10 +49,10 @@ export function transformGraphData(
     }))
   }
 
-  // Group by xAxis
+  // Group by xAxis (normalize datetime keys to date-only for daily grouping)
   const groups = new Map<string | number, number[]>()
   for (const row of filtered) {
-    const key = row[config.xAxis] as string | number
+    const key = normalizeGroupKey(row[config.xAxis])
     const yVal = Number(row[config.yAxis ?? ''] ?? 0)
     if (!groups.has(key)) groups.set(key, [])
     groups.get(key)!.push(yVal)

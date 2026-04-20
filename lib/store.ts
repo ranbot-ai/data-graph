@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react'
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import { idbStorage } from './idb'
 import type { ParsedData, GraphConfig, Settings, ChatMessage, AIProvider, Locale } from './types'
 
 interface DataSlice {
@@ -29,7 +31,11 @@ interface SettingsSlice {
   setLocale: (locale: Locale) => void
 }
 
-type StoreState = DataSlice & GraphsSlice & ChatSlice & SettingsSlice
+interface SessionSlice {
+  clearSession: () => void
+}
+
+type StoreState = DataSlice & GraphsSlice & ChatSlice & SettingsSlice & SessionSlice
 
 const defaultSettings: Settings = {
   provider: 'claude',
@@ -41,41 +47,51 @@ const defaultSettings: Settings = {
 export const useStore = create<StoreState>()(
   persist(
     (set) => ({
-      // Data slice (not persisted — see partialize below)
       parsedData: null,
       setParsedData: (data) => set({ parsedData: data }),
       clearData: () => set({ parsedData: null }),
 
-      // Graphs slice (not persisted)
       graphs: [],
       addGraph: (config) => set((s) => ({ graphs: [...s.graphs, config] })),
       removeGraph: (id) => set((s) => ({ graphs: s.graphs.filter((g) => g.id !== id) })),
       clearGraphs: () => set({ graphs: [] }),
 
-      // Chat slice (not persisted)
       messages: [],
       addMessage: (msg) => set((s) => ({ messages: [...s.messages, msg] })),
       clearMessages: () => set({ messages: [] }),
 
-      // Settings slice (persisted)
       settings: defaultSettings,
       setProvider: (provider) =>
         set((s) => ({ settings: { ...s.settings, provider } })),
       setApiKey: (provider, key) =>
         set((s) => ({
-          settings: {
-            ...s.settings,
-            apiKeys: { ...s.settings.apiKeys, [provider]: key },
-          },
+          settings: { ...s.settings, apiKeys: { ...s.settings.apiKeys, [provider]: key } },
         })),
       setDefaultGraphCount: (count) =>
         set((s) => ({ settings: { ...s.settings, defaultGraphCount: count } })),
       setLocale: (locale) =>
         set((s) => ({ settings: { ...s.settings, locale } })),
+
+      clearSession: () => set({ parsedData: null, graphs: [], messages: [] }),
     }),
     {
-      name: 'datagraph-settings',
-      partialize: (state) => ({ settings: state.settings }),
+      name: 'datagraph',
+      storage: createJSONStorage(() => idbStorage),
+      partialize: (state) => ({
+        settings: state.settings,
+        parsedData: state.parsedData,
+        graphs: state.graphs,
+        messages: state.messages,
+      }),
     }
   )
 )
+
+export function useHasHydrated(): boolean {
+  const [hydrated, setHydrated] = useState(() => useStore.persist.hasHydrated())
+  useEffect(() => {
+    const unsub = useStore.persist.onFinishHydration(() => setHydrated(true))
+    return unsub
+  }, [])
+  return hydrated
+}

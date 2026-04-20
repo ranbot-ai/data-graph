@@ -35,10 +35,24 @@ const messages = {
     table: {
       prev: "Prev",
       next: "Next",
+      search: "Search...",
     },
     graph: {
       noChart: "No chart",
       removeLabel: "Remove graph",
+    },
+    dashboard: {
+      tabTable: "Table",
+      tabCharts: "Charts",
+    },
+    session: {
+      stored: "Data saved in browser",
+      rows: "rows",
+      charts: "charts",
+      messages: "messages",
+      clearButton: "Clear data",
+      tip: "Your data stays local — nothing is uploaded to any server.",
+      restored: "Session restored",
     },
   },
   ja: {
@@ -73,10 +87,24 @@ const messages = {
     table: {
       prev: "前へ",
       next: "次へ",
+      search: "検索...",
     },
     graph: {
       noChart: "グラフなし",
       removeLabel: "グラフを削除",
+    },
+    dashboard: {
+      tabTable: "テーブル",
+      tabCharts: "グラフ",
+    },
+    session: {
+      stored: "データをブラウザに保存済み",
+      rows: "行",
+      charts: "グラフ",
+      messages: "メッセージ",
+      clearButton: "データを削除",
+      tip: "データはローカルに保存され、サーバーにはアップロードされません。",
+      restored: "セッションを復元しました",
     },
   },
   zh: {
@@ -110,10 +138,24 @@ const messages = {
     table: {
       prev: "上一页",
       next: "下一页",
+      search: "搜索...",
     },
     graph: {
       noChart: "无图表",
       removeLabel: "删除图表",
+    },
+    dashboard: {
+      tabTable: "表格",
+      tabCharts: "图表",
+    },
+    session: {
+      stored: "数据已保存至浏览器",
+      rows: "行",
+      charts: "图表",
+      messages: "条消息",
+      clearButton: "清除数据",
+      tip: "数据仅保存在本地，不会上传至任何服务器。",
+      restored: "会话已恢复",
     },
   },
 } as const;

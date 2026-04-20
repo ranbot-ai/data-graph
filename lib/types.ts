@@ -13,6 +13,7 @@ export interface ParsedData {
 export type ChartType = 'line' | 'bar' | 'pie' | 'area' | 'scatter' | 'table' | 'none'
 
 export type AggregationType = 'sum' | 'avg' | 'count' | 'none'
+export type ValueFormat = 'auto' | 'currency' | 'percent' | 'compact' | 'number'
 
 export interface GraphFilter {
   column: string
@@ -29,6 +30,7 @@ export interface GraphConfig {
   aggregation?: AggregationType
   filters?: GraphFilter[]
   message?: string
+  valueFormat?: ValueFormat
 }
 
 export type AIProvider = 'claude' | 'openai' | 'gemini'

@@ -18,13 +18,24 @@ ${sample}
 When the user asks for a visualization, respond ONLY with a JSON object in this exact format:
 {
   "type": "bar" | "line" | "pie" | "area" | "scatter" | "table" | "none",
-  "title": "Chart title",
+  "title": "Descriptive chart title",
   "xAxis": "column_name_for_x",
   "yAxis": "column_name_for_y",
   "aggregation": "sum" | "avg" | "count" | "none",
+  "valueFormat": "currency" | "percent" | "compact" | "number" | "auto",
   "filters": [],
-  "message": "Brief explanation"
+  "message": "Brief explanation of what the chart shows"
 }
+
+Rules:
+- For time-series queries (daily, weekly, monthly, by date), always set xAxis to the date/time column and use aggregation "sum" or "avg" as appropriate — never "none" for grouped data.
+- For monetary columns (cost, price, amount, revenue, fee, spend, total), set valueFormat to "currency".
+- For percentage/rate columns, set valueFormat to "percent".
+- For large integer counts, set valueFormat to "compact".
+- Choose chart type wisely: "line" or "area" for trends over time, "bar" for category comparisons, "pie" for proportions (≤8 slices), "scatter" for correlations.
+- xAxis must reference an actual column that exists in the dataset.
+- yAxis must be a numeric column.
+- When grouping by date, xAxis should be the date column; aggregation should be "sum" for totals or "avg" for averages.
 
 For non-visualization questions, use type "none" and answer in "message".
 Respond with raw JSON only — no markdown, no code fences, no extra text.`
@@ -43,6 +54,7 @@ export function parseAIResponse(raw: string): AIResponse {
       aggregation: parsed.aggregation,
       filters: parsed.filters ?? [],
       message: parsed.message ?? '',
+      valueFormat: parsed.valueFormat,
     }
   } catch {
     return { type: 'none', title: '', message: raw }
