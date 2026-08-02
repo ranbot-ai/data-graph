@@ -38,3 +38,6 @@ next-env.d.ts
 .superpowers/
 docs/superpowers/
 .claude/settings.*.json
+
+# Temp
+/tmp/
