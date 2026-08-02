@@ -177,14 +177,55 @@ Suites cover:
 
 ## Deployment
 
-The `next.config.mjs` uses `output: 'standalone'` for small, self-contained containers. Deploy to Vercel, Docker, or any Node host:
+The `next.config.mjs` uses `output: 'standalone'` for a small, self-contained server bundle. Deploy to Vercel, Docker, or any Node host.
+
+### Build & run
 
 ```bash
+npm install
 npm run build
+cp -r .next/static .next/standalone/.next/static   # static assets aren't copied automatically
+[ -d public ] && cp -r public .next/standalone/public
 node .next/standalone/server.js
 ```
 
-Set the provider env vars (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`) in your hosting environment.
+If your fork adds a `public/` directory, copy that too (`cp -r public .next/standalone/public`) — this repo has none, since its only static asset (`favicon.ico`) lives under `app/` and is served natively by the App Router.
+
+Set the provider env vars (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`) and optionally `PORT` before starting.
+
+### Process manager (pm2)
+
+On a Linux VM, run the standalone server under [pm2](https://pm2.keymetrics.io/) so it restarts on crash/reboot:
+
+```bash
+pm2 start server.js --name data-graph
+pm2 save                       # persist the process list
+pm2 startup systemd            # (one-time) resurrect pm2 on server reboot
+```
+
+Check what's actually in `.next`:
+
+```bash
+ls -la .next                # should contain: standalone/  static/  server/  ...
+ls -la .next/standalone      # should contain: server.js  node_modules/  package.json  .next/
+find . -maxdepth 3 -iname "server.js"
+```
+
+Common operations:
+
+```bash
+pm2 status data-graph                    # is it running?
+pm2 logs data-graph --lines 50           # tail logs
+pm2 restart data-graph                   # after a rebuild/deploy
+```
+
+The path to `server.js` depends on where the build ran: if you `npm run build` in place (as above), it's `.next/standalone/server.js` relative to the project root. If you instead sync a build output into a separate deploy directory (e.g. rsyncing the *contents* of `.next/standalone/` into it), `server.js` ends up at the top level of that directory instead — run `find . -maxdepth 2 -iname server.js` if `pm2 start` reports `Script not found`.
+
+### Hosting options
+
+- **Vercel** — zero config; `output: 'standalone'` is ignored safely since Vercel uses its own build pipeline.
+- **Docker** — multi-stage build copying `.next/standalone`, `.next/static`, and `public` (if present) into a slim runtime image.
+- **Any Linux VM** (e.g. Ubuntu) — pm2 (above) plus `nginx` in front as a reverse proxy handling TLS.
 
 ## Privacy
 
